@@ -12,8 +12,7 @@ type Consignee struct {
 	City          string
 	State         string
 	Country       string
-	//todo:需要统一idl中的ZipCode与数据库及代码中的ZipCode类型
-	ZipCode string
+	ZipCode       string
 }
 
 type OrderState string
@@ -52,8 +51,20 @@ func GetOrder(ctx context.Context, db *gorm.DB, userId uint32, orderId string) (
 	return
 }
 
+func GetByOrderId(ctx context.Context, db *gorm.DB, orderId string) (o Order, err error) {
+	err = db.WithContext(ctx).Model(&Order{}).Where("order_id = ?", orderId).Find(&o).Error
+	return
+}
+
 func UpdateOrderState(ctx context.Context, db *gorm.DB, userId uint32, orderId string, newState OrderState) error {
 	return db.WithContext(ctx).Model(&Order{}).
 		Where("user_id = ? and order_id = ?", userId, orderId).
 		UpdateColumn("order_state", newState).Error
+}
+
+func UpdateOrderInfo(ctx context.Context, db *gorm.DB, userId int32, orderId string, newOrder Order) error {
+	//todo:更新订单的Consignee
+	return db.WithContext(ctx).Debug().Model(&Order{}).
+		Where("user_id = ? and order_id = ?", userId, orderId).
+		Updates(&newOrder).Error
 }

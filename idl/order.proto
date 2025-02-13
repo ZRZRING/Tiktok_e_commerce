@@ -3,6 +3,7 @@ syntax = "proto3";
 package order;
 
 import "cart.proto";
+import "common.proto";
 
 option go_package = "order";
 
@@ -10,6 +11,8 @@ service OrderService {
     rpc PlaceOrder(PlaceOrderReq) returns (PlaceOrderResp) {}
     rpc ListOrder(ListOrderReq) returns (ListOrderResp) {}
     rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp) {}
+    rpc UpdateOrderInfo(UpdateOrderInfoReq)returns(common.Empty){}
+    rpc MarkOrderCanceled(CancelOrderReq) returns(common.Empty){}
 }
 
 message Address {
@@ -66,3 +69,14 @@ message MarkOrderPaidReq {
 }
 
 message MarkOrderPaidResp {}
+
+//支持修改订单的收货信息
+message UpdateOrderInfoReq {
+    string order_id=1;
+    Address address = 2;
+}
+
+message CancelOrderReq{
+    string order_id=1;
+    uint32 user_id = 2;
+}

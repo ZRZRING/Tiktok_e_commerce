@@ -26,6 +26,7 @@ func (s *PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrde
 		err = kerrors.NewGRPCBizStatusError(500001, "items is empty")
 		return
 	}
+	//todo:place order的同时将当前订单放进消息队列,如果15分钟仍未被支付,则标记为canceled状态
 
 	err = mysql.DB.Transaction(func(tx *gorm.DB) error {
 		//1.创建order
